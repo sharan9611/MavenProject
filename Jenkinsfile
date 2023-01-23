@@ -14,7 +14,7 @@ pipeline {
         stage('Maven Build') {
             steps {
                 echo 'maven build step'
-                sh 'maven clean install'
+                sh 'mvn clean install'
             }
         }
         stage('Deploy') {
