@@ -2,7 +2,7 @@ pipeline {
     agent any
     tools {
         maven 'maven'
-        jdk 'java'
+        jdk 'JDK'
     }
     stages {
         stage('Git Clone') {
