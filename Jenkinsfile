@@ -4,7 +4,12 @@ pipeline {
     stage('Build') {
       steps {
 	 sh 'printenv'
-	   
+      }
+    }	    
+     stage('Initialize'){
+     def dockerHome = tool 'myDocker'
+     env.PATH = "${dockerHome}/bin:${env.PATH}"
+       	   
        }
      }
      stage ('Publish ECR') {
