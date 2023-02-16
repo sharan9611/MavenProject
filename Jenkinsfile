@@ -19,7 +19,6 @@ pipeline {
           sh 'docker build -t ecr-demo .'
           sh 'docker tag ecr-demo:latest public.ecr.aws/x8z8q6s2/demo:""$BUILD-ID""'
 	  sh 'docker push public.ecr.aws/x8z8q6s2/demo:""$BUILD-ID""'
-	}
       }
     }
   }
