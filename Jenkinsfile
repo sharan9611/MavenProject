@@ -1,27 +1,22 @@
 pipeline {
-    agent any
-    tools {
-        maven 'maven'
-        jdk 'JDK'
-    }
-    stages {
-        stage('Git Clone') {
-            steps {
-                echo 'Clone Github Source code'
-                git credentialsId: '23a41ef3-9c8b-41ef-ba7e-17c6fdcf5928', url: 'https://github.com/sharan9611/MavenProject.git'
-            }
-        }
-        stage('Maven Build') {
-            steps {
-                echo 'maven build step'
-                sh 'mvn clean install'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploy war file to Tomcat server'
-                deploy adapters: [tomcat9(credentialsId: 'f1a32f95-41e7-441c-b5db-04a67c797c93', path: '', url: 'http://13.127.148.143:8084')], contextPath: null, war: '*/*.war'
-            }
-        }
-    }    
-}        
+   agent any
+   stages {
+   stage('build') {
+     steps {
+	   sh 'printenv'
+	   sh 'docker build -t ecr-demo .'
+	   
+	  }
+	 }
+	 stage ('Publish ECR') {
+	   steps {
+	     withEnv (["AWS-ACCESS_KEY_ID=$(env.AWS-ACCESS_KEY_ID)","AWS-SECRET_ACCESS_KEY=$(env.AWS-SECRET_ACCESS_KEY)","AWS_DEFAULT_REGION=$(env.AWS_DEFAULT_REGION}"]) {
+		   sh 'docker login -u AWS -p $(aws ecr-public get-login-password --region us-east-1) public.ecr.aws/x8z8q6s2
+		   sh 'docker build -t ecr-demo .'
+		   sh 'docker tag ecr-demo:""$BUILD-ID""
+		   sh 'docker push public.ecr.aws/x8z8q6s2/demo:""$BUILD-ID""'
+		}
+	  }
+	}
+  }
+}	
